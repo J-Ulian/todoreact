@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script
+      src="https://unpkg.com/react@16/umd/react.development.js"
+      crossorigin
+    ></script>
+    <script
+      src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"
+      crossorigin
+    ></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <title>Todo</title>
+    <style>
+      #app {
+        text-align: center;
+        align-items: center;
+        justify-items: center;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        padding-left: 10%;
+        padding-right: 10%;
+        margin: 0px;
+      }
+
+      ul {
+        text-align: center;
+        list-style-position: inside;
+      }
+
+      button {
+        transition-duration: 0.4s;
+        margin: 3px;
+      }
+
+      button:hover {
+        border-color: red;
+
+        color: white;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="app"></div>
+    <script type="text/babel">
+      class App extends React.Component {
+        constructor(props) {
+          super(props);
+          this.state = {
+            data: [1, 2, 3],
+            input: "",
+            counter: 0,
+          };
+          this.delete = this.delete.bind(this);
+        }
+
+        delete(id) {
+          this.setState((prevState) => ({
+            data: prevState.data.filter((el) => el != id),
+            counter: prevState.counter - 1,
+          }));
+        }
+
+        render() {
+          return (
+            <div>
+              <Child delete={this.delete} data={this.state.data} />
+              <h3>Number of tasks: {this.state.data.length}</h3>
+
+              <div>
+                <input
+                  onKeyPress={this.inputKeyPress}
+                  onChange={this.handleChange}
+                  value={this.state.input}
+                />
+                <button onClick={this.addTask}>Add Task</button>
+              </div>
+            </div>
+          );
+        }
+
+        handleChange = (e) => {
+          this.setState({
+            input: e.target.value,
+          });
+        };
+
+        delTask = (event) => {
+          let tt = [...this.state.data];
+          let kk = this.state.data.id;
+          let removed = tt.splice(3, 1);
+          console.log(kk);
+          this.setState((state) => ({
+            data: tt,
+            counter: state.counter - 1,
+          }));
+        };
+
+        addTask = () => {
+          this.setState((state) => ({
+            data: [...state.data, state.input],
+            input: "",
+            counter: state.counter + 1,
+          }));
+        };
+
+        inputKeyPress = (e) => {
+          if (e.key === "Enter") {
+            this.setState((state) => ({
+              data: [...state.data, state.input],
+              input: "",
+              counter: state.counter + 1,
+            }));
+          }
+        };
+      }
+
+      class TodoList extends React.Component {
+        _handleDelete(id) {
+          this.props._handleDelete(id);
+        }
+      }
+
+      class Child extends React.Component {
+        delete(id) {
+          this.props.delete(id);
+        }
+
+        render() {
+          return (
+            <div>
+              <h1>Tasks</h1>
+              <ul>
+                {this.props.data.map((el) => (
+                  <li>
+                    {" "}
+                    <button onClick={this.delete.bind(this, el)}>
+                      {" "}
+                      &#10060;
+                    </button>
+                    {el}{" "}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          );
+        }
+      }
+
+      ReactDOM.render(<App />, document.querySelector("#app"));
+    </script>
+  </body>
+</html>
